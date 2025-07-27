@@ -565,18 +565,43 @@ def orthogonalization(ovrlp, kin, elnuc):
     return C, kin1, elnuc1
 
 
+def nuclei_energy(geom):
+
+    def coll_ind(n):
+        # collective index
+        # it takes its number n and return ij
+        n += 1
+        a = (mt.sqrt(1 + 8 * n) - 1) / 2
+        j = mt.ceil(a)
+        lb = (j - 1) * j / 2
+        i = int(n - lb)
+        return i - 1, j - 1
+
+    N = int(geom.size / 4)  # a number of nuclei
+    M = int(N * (N + 1) / 2)  # atomic pair including repeating
+    E = 0  # nuclei energy
+    for k in range(M):
+        i, j = coll_ind(k)
+        if i != j :
+            x = geom[i, 1] - geom[j, 1]
+            y = geom[i, 2] - geom[j, 2]
+            z = geom[i, 3] - geom[j, 3]
+            r = mt.sqrt(x ** 2 + y ** 2 + z ** 2)
+            E += geom[i, 0] * geom[j, 0] / r
+    return E
+
+
 def matrix_computation(file):
     # Data for 1-RDM construction
     n, k, geom, gen, exp = input_reading(file)
     exp = normalization(gen, exp)  # normalization of basis functions if they are not
-    s = matrix(gen,exp, geom, 1)  # overlap matrix
+    s = matrix(gen, exp, geom, 1)  # overlap matrix
     c = np.linalg.inv(sp.linalg.sqrtm(s))
     kin = matrix(gen, exp, geom, 2)  # kinetic energy matrix
     elnucl = matrix(gen, exp, geom, 3)  # electron-nuclei interaction matrix
-    #c, kin1, elnucl1 = orthogonalization(s, kin, elnucl)  # recomputing matrices within orthogonal basis set
     ten = elel_tensor(gen, exp)
-    #ten1 = tensor_orthogonalization(c, ten)  # recomputing the tensor
-    return n, k, geom, gen, exp, c, kin, elnucl, kin + elnucl, ten
+    Enucl = nuclei_energy(geom)
+    return n, k, geom, gen, exp, c, kin, elnucl, kin + elnucl, ten, Enucl
 
 
 # N       — Total number of electrons in the molecule
@@ -589,6 +614,7 @@ def matrix_computation(file):
 # Vext    — Matrix of the external (nuclear) potential energy ⟨χ_i|V_ext|χ_j⟩
 # Hcore   — Core Hamiltonian matrix: Hcore = Kin + Vext
 # Ten     — Four-dimensional tensor of two-electron integrals: ⟨χ_i χ_j|1/r_12|χ_k χ_l⟩
+# Enucl   — Nuclear repulsion energy
 file = open(r"C:\Users\georg\Hartree-Fock\Input.txt", 'r')
-N, K, Geom, Gen, Exp, C, Kin, Vext, Hcore, Ten = matrix_computation(file)
+N, K, Geom, Gen, Exp, C, Kin, Vext, Hcore, Ten, Enucl = matrix_computation(file)
 file.close()
