@@ -1,0 +1,7 @@
+Final results from Gaussian
+
+Energy -14.5693039931 
+
+MO coefficients:
+First orbital: 0.99785, 0.01536, -0.00330
+Second orbital: -0.21517, 0.25012, 0.80982
