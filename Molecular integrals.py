@@ -601,7 +601,7 @@ def matrix_computation(file):
     elnucl = matrix(gen, exp, geom, 3)  # electron-nuclei interaction matrix
     ten = elel_tensor(gen, exp)
     Enucl = nuclei_energy(geom)
-    return n, k, geom, gen, exp, S, kin, elnucl, kin + elnucl, ten, Enucl
+    return n, k, geom, gen, exp, s, kin, elnucl, kin + elnucl, ten, Enucl
 
 
 # N       — Total number of electrons in the molecule
