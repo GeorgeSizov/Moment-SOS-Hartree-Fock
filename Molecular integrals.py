@@ -596,12 +596,12 @@ def matrix_computation(file):
     n, k, geom, gen, exp = input_reading(file)
     exp = normalization(gen, exp)  # normalization of basis functions if they are not
     s = matrix(gen, exp, geom, 1)  # overlap matrix
-    c = np.linalg.inv(sp.linalg.sqrtm(s))
+    c = np.linalg.inv(sp.linalg.sqrtm(s))  #  Orthogonalization matrix for the basis set (symmetric orthogonalization)
     kin = matrix(gen, exp, geom, 2)  # kinetic energy matrix
     elnucl = matrix(gen, exp, geom, 3)  # electron-nuclei interaction matrix
     ten = elel_tensor(gen, exp)
     Enucl = nuclei_energy(geom)
-    return n, k, geom, gen, exp, c, kin, elnucl, kin + elnucl, ten, Enucl
+    return n, k, geom, gen, exp, S, kin, elnucl, kin + elnucl, ten, Enucl
 
 
 # N       — Total number of electrons in the molecule
@@ -609,12 +609,12 @@ def matrix_computation(file):
 # Geom    — List of nuclei with their atomic numbers and Cartesian coordinates
 # Gen     — Metadata for basis functions: indices and number of primitives per contracted function
 # Exp     — Complete list of basis function primitives: exponents, coefficients, angular momenta, and centers
-# C       — Orthogonalization matrix for the basis set (symmetric orthogonalization)
+# S       — Overlap matrix (integrals ⟨χ_i|χ_j⟩)
 # Kin     — Kinetic energy matrix (one-electron integrals ⟨χ_i|T|χ_j⟩)
 # Vext    — Matrix of the external (nuclear) potential energy ⟨χ_i|V_ext|χ_j⟩
 # Hcore   — Core Hamiltonian matrix: Hcore = Kin + Vext
 # Ten     — Four-dimensional tensor of two-electron integrals: ⟨χ_i χ_j|1/r_12|χ_k χ_l⟩
 # Enucl   — Nuclear repulsion energy
 file = open(r"C:\Users\georg\Hartree-Fock\Input.txt", 'r')
-N, K, Geom, Gen, Exp, C, Kin, Vext, Hcore, Ten, Enucl = matrix_computation(file)
+N, K, Geom, Gen, Exp, S, Kin, Vext, Hcore, Ten, Enucl = matrix_computation(file)
 file.close()
