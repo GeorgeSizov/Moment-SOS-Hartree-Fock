@@ -809,7 +809,6 @@ def generalized_eig(H, C):
 def SCF_cycles(Hcore, Ten, N, K, Geom, C, eps):
     # performs SCF calculations
     MOs, E_orb = generalized_eig(Hcore, C)  # initial guess
-    print("MOs", MOs)
     F = Fock_matrix(MOs, Hcore, Ten, N, K)
     E0 = total_energy(MOs, Hcore, F, N, K, Geom)
     delta_E = np.absolute(E0)  # initial energy
@@ -832,6 +831,7 @@ file = open(r"C:\Users\georg\Hartree-Fock\Input.txt", 'r')
 N, K, Geom, Gen, Exp, C, Kin, Vext, Hcore, Ten = matrix_computation(file)
 file.close()
 F = SCF_cycles(Hcore, Ten, N, K, Geom, C, 10 ** (-8))
+
 
 
 
